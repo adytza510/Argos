@@ -3,7 +3,7 @@
  */
 var app = angular.module('AdminApp', ['ngMap','ui.router','ui.bootstrap', 'chart.js', 'Directives']);
 app.config(function($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise("/dashboard");
     $stateProvider
         .state('dashboard', {
             url: "/dashboard",
@@ -20,7 +20,18 @@ app.config(function($stateProvider, $urlRouterProvider){
             templateUrl: "templates/reports.html",
             controller: 'ReportsCtrl'
         })
+        .state("login",{
+            url:"/login",
+            templateUrl:"templates/login.html",
+
+        })
+        .state("register",{
+            url:"/register",
+            templateUrl:"templates/register.html",
+
+        })
 });
+
 
 
 app
@@ -169,7 +180,9 @@ app
         };
 
     })
-    .controller('ReportsCtrl', function($scope){});
+    .controller('ReportsCtrl', function($scope){
+       // $scope.
+    });
 
 
 var nightMap = [
