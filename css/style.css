@@ -1,0 +1,119 @@
+body {
+    padding-top: 52px;
+    background-color: rgba(0, 58, 81, 0.2);
+}
+
+body, html {
+    height: 100%;
+    width: 100%;
+}
+
+#argosMap {
+    height:650px;
+    width:100%;
+}
+
+#menu {
+    left: -25px !important;
+}
+
+#menuList {
+    background-color: rgba(0, 0, 0, 0.78);
+    height: 900px;
+    font-size: 0.95em;
+}
+
+#autocompletePredictionsSearch {
+    padding: 10px 0 0 10px;
+    width: 27%;
+    opacity: 0.85;
+}
+
+#destination-input{
+    border-radius: 0;
+}
+
+#notifications {
+    width: 300px !important;
+    padding-top: 0;
+}
+
+.customchart{
+    background-color: rgba(0, 0, 0, 0.28);
+    color: whitesmoke !important;
+    height: 400px !important;
+}
+
+.dropdown-header{
+    background-color: whitesmoke;
+    padding: 10px 10px 10px 20px;
+}
+
+.dropdown-menu{
+    border: 0;
+}
+
+.widget {
+    border-radius: 4px;
+    color: #c1c1c1;
+    z-index: 100;
+}
+
+.widget .content{
+    padding: 15px 15px 0 15px;
+}
+
+.widget-blue {
+    background: rgba(0, 109, 204, 0.70);
+}
+.widget-purple{
+    background: rgba(138, 43, 226, 0.70);
+}
+.widget-black{
+    background: rgba(0, 0, 0, 0.70);
+}
+.progressbar {
+    height:2px;
+    border-radius: 0;
+    background-color: inherit;
+    z-index: 123 !important;
+}
+.progressbar > div {
+    background-color: whitesmoke;
+}
+
+.uib-tab a {
+    color: lightgrey;
+    border-radius: 0 !important;
+}
+
+.uib-tab a:hover {
+    color: blueviolet;
+    border-radius: 0 !important;
+}
+
+.uib-tab.active a {
+    background-color: blueviolet !important;
+    color: floralwhite !important;
+}
+
+.actual{
+    background-color: blueviolet !important;
+    color: floralwhite !important;
+}
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+.btn, .panel, .panel-heading {
+    border-radius: 0 !important;
+}
+
+a[href^="http://maps.google.com/maps"]{display:none !important}
+a[href^="https://maps.google.com/maps"]{display:none !important}
+
+.gmnoprint a, .gmnoprint span, .gm-style-cc {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}

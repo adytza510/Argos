@@ -1,0 +1,20 @@
+<em>{{dt | date:'fullDate' }}</em>
+<div class="row">
+    <br/>
+    <widget title="NUMAR DE MASINI AZI" widget-color="widget-blue" glyphicon="glyphicon-scale" ng-click="openModal()"></widget>
+    <widget title="GRADUL DE OCUPARE" widget-color="widget-purple" glyphicon="glyphicon-equalizer" ng-click="openModal()"></widget>
+    <widget title="VISITORS ANALYTICS" widget-color="widget-black" glyphicon="glyphicon-stats" ng-click="openModal()"></widget>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-md-3">
+        <div uib-datepicker ng-model="dt"></div>
+    </div>
+    <div class="col-md-9">
+        <canvas class="chart chart-line customchart" chart-data="data"
+                chart-labels="labels" chart-series="series" chart-options="options"
+                chart-dataset-override="datasetOverride" chart-click="onClick">
+        </canvas>
+    </div>
+</div>
+<hr/>

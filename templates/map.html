@@ -1,0 +1,44 @@
+<ng-map id="argosMap"
+        center="{{myPos}}"
+        zoom="16"
+        map-type-control="false"
+        disable-default-u-i="true"
+        map-type-id="ROADMAP"
+        styles="{{nightMapStyle}}"
+        fullscreen-control="true">
+
+    <custom-control id="autocompletePredictionsSearch" position="TOP_LEFT" index="1">
+        <div class="form-group">
+            <input type="search"
+                   class="form-control"
+                   id="destination-input"
+                   placeholder="Search Location"
+                   ng-keyup="toggleSearch(searchLocation)"
+                   ng-model="searchLocation"
+                   ng-enter="addRoute(searchLocation)">
+        </div>
+        <ul class="list-group" id="predictionsDiv" ng-show="showPredicitions">
+            <li ng-repeat="prediction in autocompletePredictions"
+                class="list-group-item"
+                style="cursor:pointer"
+                ng-click="goToPrediction(prediction.place_id)">
+                    <i class="glyphicon glyphicon-map-marker"></i>
+                    <span>{{prediction.description}}</span>
+            </li>
+        </ul>
+    </custom-control>
+
+    <shape id="polygon" name="polygon" stroke-color="#FF0000"
+           stroke-opacity="1.0" stroke-weight="2"
+           paths="[[44.41,26.17],[44.408,26.17],[44.4095,26.165],[44.41,26.17]]" >
+    </shape>
+    <marker
+            position="{{myPos}}">
+    </marker>
+</ng-map>
+    <!--<div class="col-md-2" style="left:0 !important;">-->
+        <!--<div id="customControl1" class="row text-center">-->
+            <!--<button class="btn btn-info" style="width: 100%">Apasa</button>-->
+            <!--<button class="btn btn-danger" style="width: 100%">Nu apasa!</button>-->
+        <!--</div>-->
+    <!--</div>-->
