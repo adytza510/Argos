@@ -2,6 +2,30 @@
  * Created by bogdan.voicu on 12/28/2016.
  */
 var app = angular.module('AdminApp', ['ngMap','ui.router','ui.bootstrap', 'chart.js', 'Directives']);
+
+// ================ Logica la INITIALIZAREA aplicatiei/refresh ===================
+//app.run(function($rootScope, $state, $firebaseAuth, $http){
+//    // Salvarea datelor utilizatorului cand se schimba starea AUTENTIFICARII FIREBASE
+//    $firebaseAuth().$onAuthStateChanged(function(user) {
+//        if(user){
+//            $rootScope.user = user;
+//            $http.get(rootUrl + '/userProps/'+ user.id).success(function(data){
+//                $rootScope.user.userProps = data;
+//            });
+//            $state.go('app.dashboard')
+//        } else {
+//            $rootScope.user = null;
+//        }
+//    });
+//
+//    // RUTA in cazul in care initializezi aplicatia cu altceva in afara de Login sau Register
+//    $rootScope.on('$stateChangeStart', function(event, args) {
+//        if(args.name !== 'login' &&  args.name !== 'register'&& !$rootScope.user) {
+//            $state.go('login');
+//        }
+//    })
+//});
+
 app.config(function($stateProvider, $urlRouterProvider){
     $urlRouterProvider.otherwise("/dashboard");
     $stateProvider
@@ -27,7 +51,43 @@ app.config(function($stateProvider, $urlRouterProvider){
         .state("register",{
             url:"/register",
             templateUrl:"templates/register.html",
-        })
+        });
+
+    // =================== RUTE ======================
+    //$urlRouterProvider.otherwise("/user/login");
+    //$stateProvider
+    //    .state('user', {
+    //        url: '/user',
+    //        abstract: true,
+    //        views: {
+    //            'login@user': {
+    //                templateUrl: 'templates/login.html'
+    //            },
+    //            'register@user': {
+    //                templateUrl: 'templates/register.html'
+    //            },
+    //            'settings@user': {}
+    //        },
+    //        controller: 'UserCtrl'
+    //    })
+    //    .state('app', {
+    //        url: '/',
+    //        abstract: true,
+    //        views: {
+    //            'dashboard@app': {
+    //                templateUrl: 'templates/dashboard.html',
+    //                controller: 'MainCtrl'
+    //            },
+    //            'map@app': {
+    //                templateUrl: 'templates/map.html',
+    //                controller: 'MapCtrl'
+    //            },
+    //            'reports@app': {
+    //                templateUrl: 'templates/reports.html',
+    //                controller: 'ReportsCtrl'
+    //            }
+    //        }
+    //    });
 });
 
 
