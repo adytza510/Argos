@@ -24,4 +24,16 @@ angular.module('Directives', [])
                 }
             });
         };
+    })
+    .directive('menuTop', function(){
+        return {
+            restrict: 'E',
+            templateUrl: 'templates/partials/menuTop.html',
+        }
+    })
+    .directive('menuLeft', function(){
+        return {
+            restrict: 'E',
+            templateUrl: 'templates/partials/menuLeft.html',
+        }
     });

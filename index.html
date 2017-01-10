@@ -18,84 +18,70 @@
     <script src="js/directives.js"></script>
 </head>
 <body ng-app="AdminApp" class="container-fluid" ng-controller="MainCtrl">
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header text-center" style="padding-left: 3%">
-            <a class="navbar-brand" href="#">Argos PS</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown" style="cursor: pointer;">
-                <a class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-bell" > </span>
-                    <span class="label label-danger">5</span>
-                </a>
-                <ul class="dropdown-menu" id="notifications">
-                    <li class="dropdown-header"><b>Notifications</b></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4t</a></li>
-                    <li class="divider"></li>
-                    <div class="text-center"><a style="font-size: 0.91em; color: rgba(0, 0, 0, 0.60)">View more</a></div>
-                </ul>
-            </li>
-            <li class="dropdown" style="cursor: pointer;">
-                <a class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-user"> </span> Your Name
-                    <span class="caret"> </span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Edit profile</a></li>
-                    <li><a href="#">Inbox</a></li>
-                    <li><a href="#">Settings</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Log Out</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</nav>
-<div class="row">
-    <div class="col-md-2" style="position: fixed" id="menu" ng-hide="isCollapsed">
-        <div id="menuList">
-            <uib-tabset active="activePill" vertical="true" type="pills" ng-init="isActive()">
-                <uib-tab index="0" ui-sref="dashboard">
-                    <uib-tab-heading>
-                        <i class="glyphicon glyphicon-home" style="padding:0 20px 0 10px"></i> Home
-                    </uib-tab-heading>
-                </uib-tab>
-                <uib-tab index="1" ui-sref="map">
-                    <uib-tab-heading>
-                        <i class="glyphicon glyphicon-globe" style="padding:0 20px 0 10px"></i> Map
-                    </uib-tab-heading>
-                </uib-tab>
-                <uib-tab index="2" ui-sref="reports">
-                    <uib-tab-heading>
-                        <i class="glyphicon glyphicon-tasks" style="padding:0 20px 0 10px"></i> Reports
-                        <span class="pull-right"><i class="caret"></i></span>
-                    </uib-tab-heading>
-                    <ul class="nav">
-                        <li><a> Tip Raport 1</a></li>
-                        <li><a> Tip Raport 2</a></li>
-                    </ul>
-                </uib-tab>
-            </uib-tabset>
-        </div>
-        <!--<ul class="nav nav-stacked" id="menuList">-->
-            <!--<li class="text-center text-info" style="padding-top: 10px"><p>Navigation</p></li>-->
-            <!--<li ng-class="{ actual:isActive('/dashboard')}">-->
-                <!--<a ui-sref="dashboard">-->
-                    <!--<span class="glyphicon glyphicon-home" style="padding:0 20px 0 10px"> </span> Home-->
+    <menu-top></menu-top>
+<!--<nav class="navbar navbar-default navbar-fixed-top">-->
+    <!--<div class="container-fluid">-->
+        <!--<div class="navbar-header text-center" style="padding-left: 3%">-->
+            <!--<a class="navbar-brand" href="#">Argos PS</a>-->
+        <!--</div>-->
+        <!--<ul class="nav navbar-nav navbar-right">-->
+            <!--<li class="dropdown" style="cursor: pointer;">-->
+                <!--<a class="dropdown-toggle" data-toggle="dropdown">-->
+                    <!--<span class="glyphicon glyphicon-bell" > </span>-->
+                    <!--<span class="label label-danger">3</span>-->
                 <!--</a>-->
+                <!--<ul class="dropdown-menu" id="notifications">-->
+                    <!--<li class="dropdown-header"><b>Notifications</b></li>-->
+                    <!--<li><a href="#">2</a></li>-->
+                    <!--<li><a href="#">3</a></li>-->
+                    <!--<li><a href="#">4t</a></li>-->
+                    <!--<li class="divider"></li>-->
+                    <!--<div class="text-center"><a style="font-size: 0.91em; color: rgba(0, 0, 0, 0.60)">View more</a></div>-->
+                <!--</ul>-->
             <!--</li>-->
-            <!--<li ng-class="{ actual:isActive('/map')}">-->
-                <!--<a ui-sref="map"><span class="glyphicon glyphicon-globe" style="padding:0 20px 0 10px"> </span> Map</a>-->
-            <!--</li>-->
-            <!--<li ng-class="{ actual:isActive('/reports')}">-->
-                <!--<a ui-sref="reports"><span class="glyphicon glyphicon-tasks" style="padding:0 20px 0 10px"> </span>-->
-                    <!--Reports <span class="pull-right"><i class="caret"></i></span>-->
+            <!--<li class="dropdown" style="cursor: pointer;">-->
+                <!--<a class="dropdown-toggle" data-toggle="dropdown">-->
+                    <!--<span class="glyphicon glyphicon-user"> </span> Your Name-->
+                    <!--<span class="caret"> </span>-->
                 <!--</a>-->
+                <!--<ul class="dropdown-menu">-->
+                    <!--<li><a href="#">Edit profile</a></li>-->
+                    <!--<li><a href="#">Inbox</a></li>-->
+                    <!--<li><a href="#">Settings</a></li>-->
+                    <!--<li class="divider"></li>-->
+                    <!--<li><a href="#">Log Out</a></li>-->
+                <!--</ul>-->
             <!--</li>-->
         <!--</ul>-->
+    <!--</div>-->
+<!--</nav>-->
+<div class="row">
+    <div class="col-md-2" style="position: fixed" id="menu" ng-hide="isCollapsed">
+        <menu-left></menu-left>
+        <!--<div id="menuList">-->
+            <!--<uib-tabset active="activePill" vertical="true" type="pills" ng-init="isActive()">-->
+                <!--<uib-tab index="0" ui-sref="dashboard">-->
+                    <!--<uib-tab-heading>-->
+                        <!--<i class="glyphicon glyphicon-home" style="padding:0 20px 0 10px"></i> Home-->
+                    <!--</uib-tab-heading>-->
+                <!--</uib-tab>-->
+                <!--<uib-tab index="1" ui-sref="map">-->
+                    <!--<uib-tab-heading>-->
+                        <!--<i class="glyphicon glyphicon-globe" style="padding:0 20px 0 10px"></i> Map-->
+                    <!--</uib-tab-heading>-->
+                <!--</uib-tab>-->
+                <!--<uib-tab index="2" ui-sref="reports">-->
+                    <!--<uib-tab-heading>-->
+                        <!--<i class="glyphicon glyphicon-tasks" style="padding:0 20px 0 10px"></i> Reports-->
+                        <!--<span class="pull-right"><i class="caret"></i></span>-->
+                    <!--</uib-tab-heading>-->
+                    <!--<ul class="nav">-->
+                        <!--<li><a> Tip Raport 1</a></li>-->
+                        <!--<li><a> Tip Raport 2</a></li>-->
+                    <!--</ul>-->
+                <!--</uib-tab>-->
+            <!--</uib-tabset>-->
+        <!--</div>-->
     </div>
     <div class="col-md-2" ng-hide="isCollapsed"></div>
     <div class="{{viewWidth}}" style="padding-right: 45px">

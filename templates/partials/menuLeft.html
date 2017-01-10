@@ -1,0 +1,24 @@
+<div id="menuList">
+    <uib-tabset active="activePill" vertical="true" type="pills" ng-init="isActive()">
+        <uib-tab index="0" ui-sref="dashboard">
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-home" style="padding:0 20px 0 10px"></i> Home
+            </uib-tab-heading>
+        </uib-tab>
+        <uib-tab index="1" ui-sref="map">
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-globe" style="padding:0 20px 0 10px"></i> Map
+            </uib-tab-heading>
+        </uib-tab>
+        <uib-tab index="2" ui-sref="reports">
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-tasks" style="padding:0 20px 0 10px"></i> Reports
+                <span class="pull-right"><i class="caret"></i></span>
+            </uib-tab-heading>
+            <ul class="nav">
+                <li><a> Tip Raport 1</a></li>
+                <li><a> Tip Raport 2</a></li>
+            </ul>
+        </uib-tab>
+    </uib-tabset>
+</div>
