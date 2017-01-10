@@ -3,6 +3,15 @@
  */
 var app = angular.module('AdminApp', ['ngMap','ui.router','ui.bootstrap', 'chart.js', 'Directives']);
 
+var config = {
+    apiKey: "AIzaSyBIvDbQ0rLop-Fm3Z4KfzX-mAoKLZRcDYI",
+    authDomain: "helical-button-127109.firebaseapp.com",
+    databaseURL: "https://helical-button-127109.firebaseio.com",
+    storageBucket: "helical-button-127109.appspot.com",
+    messagingSenderId: "993329004190"
+};
+firebase.initializeApp(config);
+
 // ================ Logica la INITIALIZAREA aplicatiei/refresh ===================
 //app.run(function($rootScope, $state, $firebaseAuth, $http){
 //    // Salvarea datelor utilizatorului cand se schimba starea AUTENTIFICARII FIREBASE
@@ -11,7 +20,7 @@ var app = angular.module('AdminApp', ['ngMap','ui.router','ui.bootstrap', 'chart
 //            $rootScope.user = user;
 //            $http.get(rootUrl + '/userProps/'+ user.id).success(function(data){
 //                $rootScope.user.userProps = data;
-//            });
+//            }).failure(function(err){});
 //            $state.go('app.dashboard')
 //        } else {
 //            $rootScope.user = null;
