@@ -1,19 +1,15 @@
 <div class="container">
-    <div class="col-md-4 col-md-offset-4">
-        <h2 align="center">Login</h2>
-        <form>
-            <div class = "form-group">
-                <label for = "userLogin">User</label>
-                <input type = "text" class="form-control" id="userLogin" ng-model="userLogin">
-            </div>
-            <div class = "form-group">
-                <label for = "passwordLogin">Parola</label>
-                <input type = "password" class="form-control" id="passwordLogin" ng-model="passwordLogin">
-            </div>
-            <div class="btn-group-justified">
-            <a class="btn btn-primary" ng-click="alertUser()">Login</a>
-            <a class="btn btn-link" ui-sref="register" ng-click="">Register</a>
-            </div>
-        </form>
-    </div>
+    <h2>Login</h2>
+    <form>
+        <div class = "form-group">
+            <label for = "emailLogin">Email</label>
+            <input type = "email" class="form-control" id="emailLogin" ng-model="emailLogin">
+        </div>
+        <div class = "form-group">
+            <label for = "passwordLogin">Parola</label>
+            <input type = "password" class="form-control" id="passwordLogin" ng-model="passwordLogin">
+        </div>
+        <button class="btn btn-primary" ng-click="loginWithEmail()">Login</button>
+        <button class="btn btn-link" ui-sref="user.register" ng-click="">Register</button>
+    </form>
 </div>
