@@ -1,7 +1,7 @@
 /**
  * Created by bogdan.voicu on 12/28/2016.
  */
-var app = angular.module('AdminApp', ['ngMap','ui.router','ui.bootstrap', 'chart.js', 'Directives']);
+var app = angular.module('AdminApp', ['ngMap', 'ui.router', 'ui.bootstrap', 'firebase', 'chart.js', 'Directives']);
 
 var config = {
     apiKey: "AIzaSyBIvDbQ0rLop-Fm3Z4KfzX-mAoKLZRcDYI",
@@ -13,90 +13,77 @@ var config = {
 firebase.initializeApp(config);
 
 // ================ Logica la INITIALIZAREA aplicatiei/refresh ===================
-//app.run(function($rootScope, $state, $firebaseAuth, $http){
-//    // Salvarea datelor utilizatorului cand se schimba starea AUTENTIFICARII FIREBASE
-//    $firebaseAuth().$onAuthStateChanged(function(user) {
-//        if(user){
-//            $rootScope.user = user;
-//            $http.get(rootUrl + '/userProps/'+ user.id).success(function(data){
-//                $rootScope.user.userProps = data;
-//            }).failure(function(err){});
-//            $state.go('app.dashboard')
-//        } else {
-//            $rootScope.user = null;
-//        }
-//    });
-//
-//    // RUTA in cazul in care initializezi aplicatia cu altceva in afara de Login sau Register
-//    $rootScope.on('$stateChangeStart', function(event, args) {
-//        if(args.name !== 'login' &&  args.name !== 'register'&& !$rootScope.user) {
-//            $state.go('login');
-//        }
-//    })
-//});
+app.run(function($rootScope, $state, $firebaseAuth, $http){
+    // Salvarea datelor utilizatorului cand se schimba starea AUTENTIFICARII FIREBASE
+    $firebaseAuth().$onAuthStateChanged(function(user) {
+        if(user){
+            $rootScope.user = user;
+            console.log(user);
+            //$http.get(rootUrl + '/userProps/'+ user.id)
+            //    .success(function(data){
+            //        $rootScope.user.userProps = data;
+            //    })
+            //    .failure(function(err){});
+            $state.go('app.dashboard')
+        } else {
+            $rootScope.user = null;
+        }
+    });
+
+    // RUTA in cazul in care initializezi aplicatia cu altceva in afara de Login sau Register
+    $rootScope.$on('$stateChangeStart', function(event, args) {
+        console.log(args.name);
+        if(args.name !== 'user.login' &&  args.name !== 'user.register'&& !$rootScope.user) {
+            $state.go('user.login');
+        }
+        //else if ((args.name == 'user.login' || args.name == 'user.register')&& $rootScope.user){
+        //    $state.go('app.dashboard');
+        //}
+    })
+});
 
 app.config(function($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise("/dashboard");
+
+    // =================== RUTE ======================
+    $urlRouterProvider.otherwise("user/login");
     $stateProvider
-        .state('dashboard', {
-            url: "/dashboard",
-            templateUrl: "templates/dashboard.html",
+        .state('user', {
+            url: '/user',
+            abstract: true,
+            template: '<div ui-view><div>'
+        })
+        .state("user.login",{
+            url:"/login",
+            templateUrl:"templates/login.html",
+            controller: 'UserCtrl'
+        })
+        .state("user.register",{
+            url:"/register",
+            templateUrl:"templates/register.html",
+            controller: 'UserCtrl'
+        })
+        .state('app', {
+            url: '/app',
+            abstract: true,
+            templateUrl: 'templates/partials/menu.html',
             controller: 'MainCtrl'
         })
-        .state('map', {
+        .state('app.dashboard', {
+            url: '/dashboard',
+            templateUrl: 'templates/dashboard.html',
+            controller: 'MainCtrl'
+        })
+        .state('app.map', {
             url: "/map",
             templateUrl: "templates/map.html",
             controller: 'MapCtrl'
         })
-        .state('reports', {
+        .state('app.reports', {
             url: "/reports",
             templateUrl: "templates/reports.html",
             controller: 'ReportsCtrl'
         })
-        .state("login",{
-            url:"/login",
-            templateUrl:"templates/login.html",
-        })
-        .state("register",{
-            url:"/register",
-            templateUrl:"templates/register.html",
-        });
-
-    // =================== RUTE ======================
-    //$urlRouterProvider.otherwise("/user/login");
-    //$stateProvider
-    //    .state('user', {
-    //        url: '/user',
-    //        abstract: true,
-    //        views: {
-    //            'login@user': {
-    //                templateUrl: 'templates/login.html'
-    //            },
-    //            'register@user': {
-    //                templateUrl: 'templates/register.html'
-    //            },
-    //            'settings@user': {}
-    //        },
-    //        controller: 'UserCtrl'
-    //    })
-    //    .state('app', {
-    //        url: '/',
-    //        abstract: true,
-    //        views: {
-    //            'dashboard@app': {
-    //                templateUrl: 'templates/dashboard.html',
-    //                controller: 'MainCtrl'
-    //            },
-    //            'map@app': {
-    //                templateUrl: 'templates/map.html',
-    //                controller: 'MapCtrl'
-    //            },
-    //            'reports@app': {
-    //                templateUrl: 'templates/reports.html',
-    //                controller: 'ReportsCtrl'
-    //            }
-    //        }
-    //    });
+    ;
 });
 
 
@@ -160,10 +147,45 @@ app
         }
 
     })
-    .controller('MainCtrl', function($scope, $uibModal, $location){
+    .controller('MainCtrl', function($scope, $uibModal, $location, $firebaseAuth, $state, $rootScope){
         $scope.isCollapsed = false;
         $scope.menuWidth = 'col-md-2';
         $scope.viewWidth = 'col-md-10';
+
+        $rootScope.popupInfo = function(txt){
+            $uibModal.open({
+                templateUrl:'templates/partials/popupInfo.html',
+                size: 'sm',
+                //backdrop: false,
+                controller: function ($scope, $uibModalInstance, $timeout) {
+                    $timeout(function() {
+                        $uibModalInstance.close(); //close the popup after 2.5 seconds
+                    }, 2500);
+
+                    $scope.txt = txt;
+
+                    $scope.modalCancel = function(){
+                        $uibModalInstance.close();
+                    };
+                }
+            });
+        };
+
+        $rootScope.popupError = function(txt){
+            $uibModal.open({
+                templateUrl:'templates/partials/popupError.html',
+                size: 'sm',
+                //backdrop: false,
+                controller: function ($scope, $uibModalInstance) {
+
+                    $scope.txt = txt;
+
+                    $scope.modalCancel = function(){
+                        $uibModalInstance.close();
+                    };
+                }
+            });
+        };
 
         $scope.collapseMenu = function(col){
             if(col) {
@@ -178,9 +200,21 @@ app
         $scope.activePill = 0;
         $scope.isActive = function () {
             var viewLocation =  $location.path();
-            if(viewLocation == '/dashboard'){$scope.activePill = 0}
-            if(viewLocation == '/map'){$scope.activePill = 1}
-            if(viewLocation == '/reports'){$scope.activePill = 2}
+            if(viewLocation == '/app/dashboard'){$scope.activePill = 0}
+            if(viewLocation == '/app/map'){$scope.activePill = 1}
+            if(viewLocation == '/app/reports'){$scope.activePill = 2}
+        };
+        $scope.popup1 = {
+            opened: false
+        };
+        $scope.open1 = function() {
+            $scope.popup1.opened = true;
+        };
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            maxDate: new Date(2020, 5, 22),
+            //minDate: new Date(),
+            startingDay: 1
         };
 
         $scope.openModal = function(){
@@ -242,13 +276,76 @@ app
             },
             legend: {display: true}
         };
-        $scope.alertChart = function(){
-            alert('salut');
+
+        $scope.logOff = function(){
+            $firebaseAuth().$signOut();
+            $state.go('user.login');
         };
 
     })
     .controller('ReportsCtrl', function($scope){
-       // $scope.
+
+    })
+    .controller('UserCtrl', function($scope, $state, $firebaseAuth){
+        var auth = $firebaseAuth();
+
+        $scope.registerWithEmail = function(){
+
+            auth.$createUserWithEmailAndPassword($scope.emailRegister, $scope.passwordRegister)
+                .then(function(){
+                    var user = firebase.auth().currentUser;
+                    user.updateProfile({
+                        displayName: $scope.userRegister,
+                        photoURL: ""
+                    }).then(function() {
+                        alert("Draga " + $scope.userRegister+", contul a fost creat!");
+                    }, function(error) {
+                        alert(error);
+                    });
+                })
+                .catch(function(error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    if (errorCode == 'auth/weak-password') {
+                        alert('The password is too weak.');
+                    } else {
+                        alert(errorMessage);
+                    }
+                });
+        };
+
+        $scope.loginWithEmail = function(){
+
+            auth.$signInWithEmailAndPassword($scope.emailLogin, $scope.passwordLogin)
+                .then(function(user){
+                    $scope.popupInfo("Draga " + user.displayName+", esti logat!");
+                    //$scope.resetPasswordEmail = user.email;
+                })
+                .catch(function(error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    if (errorCode === 'auth/wrong-password') {
+                        // $scope.showPasswordResetForm = true;
+                        alert('Wrong password.');
+                    } else {
+                        alert(errorMessage);
+                    }
+                });
+        };
+
+        $scope.fbLogin = function(){
+            var provider = new firebase.auth.FacebookAuthProvider();
+            provider.addScope('public_profile');
+            provider.addScope('email');
+            provider.addScope('user_friends');
+            auth.$signInWithPopup(provider)
+                .then(function(result) {
+                    alert('Draga '+ result.user.displayName + ' esti logat!');
+                });
+        };
+
     });
 
 

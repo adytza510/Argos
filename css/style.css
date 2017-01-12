@@ -1,5 +1,5 @@
 body {
-    padding-top: 52px;
+    padding-top: 52px !important;
     background-color: rgba(0, 58, 81, 0.2);
 }
 
@@ -36,6 +36,23 @@ body, html {
 #notifications {
     width: 300px !important;
     padding-top: 0;
+}
+
+#popupContent {
+    padding: 15px 15px 0 15px !important;
+    background-color: whitesmoke;
+    color: rgba(0, 0, 0, 0.78);
+}
+
+#popupFooter {
+    background-color: ghostwhite;
+    padding: 5px 10px 5px 220px !important;
+}
+
+
+.modal-header#popupHeader {
+    padding: 5px 10px 5px 15px !important;
+    color: whitesmoke;
 }
 
 .customchart{

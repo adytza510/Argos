@@ -2,14 +2,14 @@
     <h2>Login</h2>
     <form>
         <div class = "form-group">
-            <label for = "userLogin">User</label>
-            <input type = "text" class="form-control" id="userLogin">
+            <label for = "emailLogin">Email</label>
+            <input type = "email" class="form-control" id="emailLogin" ng-model="emailLogin">
         </div>
         <div class = "form-group">
             <label for = "passwordLogin">Parola</label>
-            <input type = "password" class="form-control" id="passwordLogin">
+            <input type = "password" class="form-control" id="passwordLogin" ng-model="passwordLogin">
         </div>
-        <button class="btn btn-primary" ng-click="">Login</button>
-        <button class="btn btn-link" ui-sref="register" ng-click="">Register</button>
+        <button class="btn btn-primary" ng-click="loginWithEmail()">Login</button>
+        <button class="btn btn-link" ui-sref="user.register" ng-click="">Register</button>
     </form>
 </div>

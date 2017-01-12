@@ -8,7 +8,13 @@
 <hr/>
 <div class="row">
     <div class="col-md-3">
-        <div uib-datepicker ng-model="dt"></div>
+        <p class="input-group">
+                <input type="text" class="form-control" uib-datepicker-popup="dd.MM.yy" ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
+        <!--<div uib-datepicker ng-model="dt"></div>-->
     </div>
     <div class="col-md-9">
         <canvas class="chart chart-line customchart" chart-data="data"
