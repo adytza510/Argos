@@ -47,6 +47,7 @@ app.config(function($stateProvider, $urlRouterProvider){
         .state("login",{
             url:"/login",
             templateUrl:"templates/login.html",
+            controller: 'AuhCtrl'
         })
         .state("register",{
             url:"/register",
@@ -73,6 +74,7 @@ app.config(function($stateProvider, $urlRouterProvider){
     //    .state('app', {
     //        url: '/',
     //        abstract: true,
+    //        templateUrl: 'templates/menu.html'
     //        views: {
     //            'dashboard@app': {
     //                templateUrl: 'templates/dashboard.html',
@@ -238,8 +240,10 @@ app
         };
 
     })
-    .controller('ReportsCtrl', function($scope){
-       // $scope.
+    .controller('ReportsCtrl', function($scope){})
+    .controller('AuhCtrl', function($scope){
+        $scope.userLogin = '';
+        $scope.alertUser = function(){alert($scope.userLogin)};
     });
 
 

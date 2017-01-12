@@ -36,4 +36,4 @@ angular.module('Directives', [])
             restrict: 'E',
             templateUrl: 'templates/partials/menuLeft.html',
         }
-    });
+    })
