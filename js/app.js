@@ -29,16 +29,16 @@ app.run(function($rootScope, $state, $firebaseAuth, $http){
             $rootScope.user = null;
         }
     });
-
+    if(!$rootScope.user){$state.go('user.login')}
     // RUTA in cazul in care initializezi aplicatia cu altceva in afara de Login sau Register
     $rootScope.$on('$stateChangeStart', function(event, args) {
         console.log(args.name);
         if(args.name !== 'user.login' &&  args.name !== 'user.register'&& !$rootScope.user) {
             $state.go('user.login');
         }
-        //else if ((args.name == 'user.login' || args.name == 'user.register')&& $rootScope.user){
-        //    $state.go('app.dashboard');
-        //}
+        else if ((args.name == 'user.login' || args.name == 'user.register')&& $rootScope.user){
+            $state.go('app.dashboard');
+        }
     })
 });
 
@@ -117,7 +117,6 @@ app
                 }
                 $scope.autocompletePredictions = predictions;
 
-                console.log($scope.autocompletePredictions);
             };
             var service = new google.maps.places.AutocompleteService();
             service.getPlacePredictions({ input: location+"", componentRestrictions: {country: 'ro'} }, displaySuggestions);
@@ -298,9 +297,9 @@ app
                         displayName: $scope.userRegister,
                         photoURL: ""
                     }).then(function() {
-                        alert("Draga " + $scope.userRegister+", contul a fost creat!");
+                        $scope.popupInfo("Draga " + $scope.userRegister+", contul a fost creat!");
                     }, function(error) {
-                        alert(error);
+                        $scope.popupError(error);
                     });
                 })
                 .catch(function(error) {
@@ -308,9 +307,9 @@ app
                     var errorCode = error.code;
                     var errorMessage = error.message;
                     if (errorCode == 'auth/weak-password') {
-                        alert('The password is too weak.');
+                        $scope.popupError('The password is too weak.');
                     } else {
-                        alert(errorMessage);
+                        $scope.popupError(errorMessage);
                     }
                 });
         };
@@ -328,9 +327,9 @@ app
                     var errorMessage = error.message;
                     if (errorCode === 'auth/wrong-password') {
                         // $scope.showPasswordResetForm = true;
-                        alert('Wrong password.');
+                        $scope.popupError('Wrong password.');
                     } else {
-                        alert(errorMessage);
+                        $scope.popupError(""+errorMessage);
                     }
                 });
         };
