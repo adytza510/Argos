@@ -1,11 +1,13 @@
 <ng-map id="argosMap"
-        center="{{myPos}}"
-        zoom="16"
+        center="[{{user.userProps.parcari[0].latitudine}}, {{user.userProps.parcari[0].longitudine}}]"
+        zoom="20"
         map-type-control="false"
         disable-default-u-i="true"
-        map-type-id="ROADMAP"
+        map-type-id="SATELLITE"
         styles="{{nightMapStyle}}"
-        fullscreen-control="true">
+        fullscreen-control="true"
+        ng-init="getParkingSpots()"
+        tilt="45">
 
     <custom-control id="autocompletePredictionsSearch" position="TOP_LEFT" index="1">
         <div class="form-group-sm">
@@ -27,14 +29,16 @@
             </li>
         </ul>
     </custom-control>
-
-    <shape id="polygon" name="polygon" stroke-color="#FF0000"
+    <shape ng-repeat="parcare in user.userProps.parcari" id="polygon" name="polygon" stroke-color="#FF0000"
            stroke-opacity="1.0" stroke-weight="2"
-           paths="[[44.41,26.17],[44.408,26.17],[44.4095,26.165],[44.41,26.17]]" >
+           paths="{{parcare.coordonate}}" >
     </shape>
-    <marker
-            position="{{myPos}}">
+    <marker ng-repeat="spot in spots" icon="icons/{{spot.status}}.png"
+            position="[{{spot.latitudine}},{{spot.longitudine}}]">
     </marker>
+    <!--<custom-marker ng-repeat="spot in spots" position="{{spot.latitudine}},{{spot.longitudine}}">-->
+        <!--<div><h1 style="color: #4cae4c"><span class="glyphicon glyphicon-map-marker"></span></h1></div>-->
+    <!--</custom-marker>-->
 </ng-map>
     <!--<div class="col-md-2" style="left:0 !important;">-->
         <!--<div id="customControl1" class="row text-center">-->

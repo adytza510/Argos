@@ -12,27 +12,75 @@ var config = {
 };
 firebase.initializeApp(config);
 
+var rootUrl = 'http://172.31.22.136:3000';
+
 // ================ Logica la INITIALIZAREA aplicatiei/refresh ===================
-app.run(function($rootScope, $state, $firebaseAuth, $http){
+app.run(function($rootScope, $state, $firebaseAuth, $http, $uibModal, $timeout){
+
+    $rootScope.popupInfo = function(txt){
+        $uibModal.open({
+            templateUrl:'templates/partials/popupInfo.html',
+            size: 'sm',
+            //backdrop: false,
+            controller: function ($scope, $uibModalInstance, $timeout) {
+                $timeout(function() {
+                    $uibModalInstance.close(); //close the popup after 2.5 seconds
+                }, 2500);
+
+                $scope.txt = txt;
+
+                $scope.modalCancel = function(){
+                    $uibModalInstance.close();
+                };
+            }
+        });
+    };
+
+    $rootScope.popupError = function(txt){
+        $uibModal.open({
+            templateUrl:'templates/partials/popupError.html',
+            size: 'sm',
+            //backdrop: false,
+            controller: function ($scope, $uibModalInstance) {
+
+                $scope.txt = txt;
+
+                $scope.modalCancel = function(){
+                    $uibModalInstance.close();
+                };
+            }
+        });
+    };
     // Salvarea datelor utilizatorului cand se schimba starea AUTENTIFICARII FIREBASE
     $firebaseAuth().$onAuthStateChanged(function(user) {
         if(user){
             $rootScope.user = user;
             console.log(user);
-            //$http.get(rootUrl + '/userProps/'+ user.id)
-            //    .success(function(data){
-            //        $rootScope.user.userProps = data;
-            //    })
-            //    .failure(function(err){});
-            $state.go('app.dashboard')
+            $http.get(rootUrl + '/user/'+ user.uid)
+                .then(function(resp){
+                    $rootScope.user.userProps = resp.data[0];
+                    $rootScope.user.userProps.parcari = [];
+                    var parcariUser = resp.data[0].id_parcari;
+                    var parcari = parcariUser.split(';');
+                    angular.forEach(parcari, function(parcare){
+                        $http.get(rootUrl+'/parking/'+parcare)
+                            .then(function(resp1){
+                                $rootScope.user.userProps.parcari.push(resp1.data[0]);
+                                //console.log($rootScope.user.userProps.parcari);
+                            })
+                            .catch(function(err){console.log(err)});
+                    });
+                })
+                .catch(function(err){console.log(err)});
+            //$state.go('app.dashboard')
         } else {
             $rootScope.user = null;
+            $state.go('user.login');
         }
     });
     if(!$rootScope.user){$state.go('user.login')}
     // RUTA in cazul in care initializezi aplicatia cu altceva in afara de Login sau Register
     $rootScope.$on('$stateChangeStart', function(event, args) {
-        console.log(args.name);
         if(args.name !== 'user.login' &&  args.name !== 'user.register'&& !$rootScope.user) {
             $state.go('user.login');
         }
@@ -89,7 +137,7 @@ app.config(function($stateProvider, $urlRouterProvider){
 
 
 app
-    .controller('MapCtrl', function($scope, NgMap, NavigatorGeolocation){
+    .controller('MapCtrl', function($scope, NgMap, NavigatorGeolocation,$http){
         $scope.nightMapStyle = nightMap;
         //NgMap.getMap('argosMap')
         //    .then(function(map) {
@@ -102,8 +150,8 @@ app
             .then(function(position) {
                 var lat = position.coords.latitude, lng = position.coords.longitude;
                 $scope.myPos = [lat, lng];
-                console.log($scope.myPos);
             });
+
         $scope.googleMapsUrl = 'https://maps.google.com/maps/api/js?key=AIzaSyBWkYuMI3tLSHzTV6kj9gzTX8_OvDlBIc4&libraries=places';
 
         $scope.showPredicitions = false;
@@ -119,7 +167,7 @@ app
 
             };
             var service = new google.maps.places.AutocompleteService();
-            service.getPlacePredictions({ input: location+"", componentRestrictions: {country: 'ro'} }, displaySuggestions);
+            service.getPlacePredictions({ input: location+"" }, displaySuggestions); //, componentRestrictions: {country: 'ro'}
         };
 
         $scope.goToPrediction = function(placeId) {
@@ -143,48 +191,28 @@ app
                 });
             $scope.showPredicitions = false;
             $scope.searchLocation = '';
-        }
+        };
+
+        $scope.getParkingSpots = function(){
+            $http.get(rootUrl+'/parkingSpot/all')
+                .then(function(resp){
+                    $scope.spots = resp.data;
+                })
+                .catch(function(err){
+                    console.log(err);
+                });
+        };
+
+        $scope.getMarkerIcon = function(status){
+            if(status==1) return 'icons/true.png';
+            else return 'icons/false.png';
+        };
 
     })
-    .controller('MainCtrl', function($scope, $uibModal, $location, $firebaseAuth, $state, $rootScope){
+    .controller('MainCtrl', function($scope, $uibModal, $location, $firebaseAuth, $state){
         $scope.isCollapsed = false;
         $scope.menuWidth = 'col-md-2';
         $scope.viewWidth = 'col-md-10';
-
-        $rootScope.popupInfo = function(txt){
-            $uibModal.open({
-                templateUrl:'templates/partials/popupInfo.html',
-                size: 'sm',
-                //backdrop: false,
-                controller: function ($scope, $uibModalInstance, $timeout) {
-                    $timeout(function() {
-                        $uibModalInstance.close(); //close the popup after 2.5 seconds
-                    }, 2500);
-
-                    $scope.txt = txt;
-
-                    $scope.modalCancel = function(){
-                        $uibModalInstance.close();
-                    };
-                }
-            });
-        };
-
-        $rootScope.popupError = function(txt){
-            $uibModal.open({
-                templateUrl:'templates/partials/popupError.html',
-                size: 'sm',
-                //backdrop: false,
-                controller: function ($scope, $uibModalInstance) {
-
-                    $scope.txt = txt;
-
-                    $scope.modalCancel = function(){
-                        $uibModalInstance.close();
-                    };
-                }
-            });
-        };
 
         $scope.collapseMenu = function(col){
             if(col) {
@@ -285,7 +313,7 @@ app
     .controller('ReportsCtrl', function($scope){
 
     })
-    .controller('UserCtrl', function($scope, $state, $firebaseAuth){
+    .controller('UserCtrl', function($scope, $state, $firebaseAuth, $rootScope){
         var auth = $firebaseAuth();
 
         $scope.registerWithEmail = function(){
@@ -298,6 +326,7 @@ app
                         photoURL: ""
                     }).then(function() {
                         $scope.popupInfo("Draga " + $scope.userRegister+", contul a fost creat!");
+                        $state.go('app.dashboard');
                     }, function(error) {
                         $scope.popupError(error);
                     });
@@ -319,6 +348,7 @@ app
             auth.$signInWithEmailAndPassword($scope.emailLogin, $scope.passwordLogin)
                 .then(function(user){
                     $scope.popupInfo("Draga " + user.displayName+", esti logat!");
+                    $state.go('app.dashboard');
                     //$scope.resetPasswordEmail = user.email;
                 })
                 .catch(function(error) {
