@@ -1,4 +1,4 @@
-angular.module('Directives', [])
+angular.module('Directives', ['RoleService'])
     .directive('widget', function(){
         return {
             restrict: 'E',
@@ -24,4 +24,20 @@ angular.module('Directives', [])
                 }
             });
         };
+    })
+    .directive('permission', function(ROLE) {
+        return {
+            restrict: 'A',
+            scope: {
+                permission: '='
+            },
+            link: function (scope, el, attrs) {
+                var hideMe = el[0];
+                scope.$watch(ROLE.isLoggedIn, function() {
+                    if (!ROLE.userHasPermission(scope.permission)) {
+                        hideMe.style.display = "none";
+                    }
+                }, true);
+            }
+        }
     });
