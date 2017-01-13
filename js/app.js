@@ -1,7 +1,7 @@
 /**
  * Created by bogdan.voicu on 12/28/2016.
  */
-var app = angular.module('AdminApp', ['ngMap', 'ui.router', 'ui.bootstrap', 'firebase', 'chart.js', 'Directives']);
+var app = angular.module('AdminApp', ['ngMap', 'ui.router', 'ui.bootstrap', 'firebase', 'chart.js', 'Directives', 'RoleService']);
 
 var config = {
     apiKey: "AIzaSyBIvDbQ0rLop-Fm3Z4KfzX-mAoKLZRcDYI",
@@ -15,7 +15,7 @@ firebase.initializeApp(config);
 var rootUrl = 'http://172.31.22.136:3000';
 
 // ================ Logica la INITIALIZAREA aplicatiei/refresh ===================
-app.run(function($rootScope, $state, $firebaseAuth, $http, $uibModal, $timeout){
+app.run(function($rootScope, $state, $firebaseAuth, $http, $uibModal, ROLE){
 
     $rootScope.popupInfo = function(txt){
         $uibModal.open({
@@ -72,19 +72,24 @@ app.run(function($rootScope, $state, $firebaseAuth, $http, $uibModal, $timeout){
                     });
                 })
                 .catch(function(err){console.log(err)});
-            //$state.go('app.dashboard')
+            $rootScope.$apply();
+            $state.go('app.dashboard')
         } else {
             $rootScope.user = null;
             $state.go('user.login');
         }
     });
-    if(!$rootScope.user){$state.go('user.login')}
+    //if(!$rootScope.user){$state.go('user.login')}
     // RUTA in cazul in care initializezi aplicatia cu altceva in afara de Login sau Register
-    $rootScope.$on('$stateChangeStart', function(event, args) {
-        if(args.name !== 'user.login' &&  args.name !== 'user.register'&& !$rootScope.user) {
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+        if (!ROLE.checkPermissionForView(toState.name)){
+            event.preventDefault();
+        }
+        if(toState.name !== 'user.login' &&  toState.name !== 'user.register'&& !$rootScope.user) {
+            event.preventDefault();
             $state.go('user.login');
         }
-        else if ((args.name == 'user.login' || args.name == 'user.register')&& $rootScope.user){
+        else if ((toState.name == 'user.login' || toState.name == 'user.register')&& $rootScope.user){
             $state.go('app.dashboard');
         }
     })
@@ -108,7 +113,8 @@ app.config(function($stateProvider, $urlRouterProvider){
         .state("user.register",{
             url:"/register",
             templateUrl:"templates/register.html",
-            controller: 'UserCtrl'
+            controller: 'UserCtrl',
+            requiresAuthentication: true,
         })
         .state('app', {
             url: '/app',
@@ -119,7 +125,7 @@ app.config(function($stateProvider, $urlRouterProvider){
         .state('app.dashboard', {
             url: '/dashboard',
             templateUrl: 'templates/dashboard.html',
-            controller: 'MainCtrl'
+            controller: 'MainCtrl',
         })
         .state('app.map', {
             url: "/map",
@@ -129,7 +135,8 @@ app.config(function($stateProvider, $urlRouterProvider){
         .state('app.reports', {
             url: "/reports",
             templateUrl: "templates/reports.html",
-            controller: 'ReportsCtrl'
+            controller: 'ReportsCtrl',
+            permissions: ["admin"]
         })
     ;
 });
