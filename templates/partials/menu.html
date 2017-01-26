@@ -4,10 +4,10 @@
             <a class="navbar-brand" href="#">Argos PS</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown" style="cursor: pointer;" permission="['ghhj']">
+            <li class="dropdown" style="cursor: pointer;">
                 <a class="dropdown-toggle" data-toggle="dropdown">
                     <span class="glyphicon glyphicon-bell" > </span>
-                    <span class="label label-danger">5</span>
+                    <span class="label label-danger">3</span>
                 </a>
                 <ul class="dropdown-menu" id="notifications">
                     <li class="dropdown-header"><b>Notifications</b></li>
@@ -24,9 +24,9 @@
                     <span class="caret"> </span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Edit profile</a></li>
-                    <li><a href="#">Inbox</a></li>
-                    <li><a href="#">Settings</a></li>
+                    <li class="disabled"><a href="#">Edit profile</a></li>
+                    <li class="disabled"><a href="#">Inbox</a></li>
+                    <li class="disabled"><a href="#">Settings</a></li>
                     <li class="divider"></li>
                     <li><a ng-click="logOff()">Log Out</a></li>
                 </ul>
@@ -34,7 +34,7 @@
         </ul>
     </div>
 </nav>
-<div class="row" permission="['ghhj']">
+<div class="row" permission="['sysadmin']" style="height: 100% !important;">
     <div class="col-md-2" style="position: fixed" id="menu" ng-hide="isCollapsed">
         <div id="menuList">
             <uib-tabset active="activePill" vertical="true" type="pills" ng-init="isActive()">
@@ -62,8 +62,8 @@
         </div>
     </div>
     <div class="col-md-2" ng-hide="isCollapsed"></div>
-    <div class="{{viewWidth}}" style="padding-right: 45px">
-        <button class="btn btn-sm btn-info" ng-click="collapseMenu(isCollapsed)"> Collapse menu</button>
-        <ui-view class="container-fluid" ></ui-view>
+    <div class="{{viewWidth}}" style="padding-right: 45px; height: 92% !important;  padding-top: 2% !important">
+        <!--<button class="btn btn-sm btn-info" ng-click="collapseMenu(isCollapsed)"> Collapse menu</button>-->
+        <ui-view class="container-fluid" style="height: 100% !important;"></ui-view>
     </div>
 </div>

@@ -5,7 +5,6 @@
 angular.module('RoleService', [])
     .factory('ROLE', function($rootScope){
         var perm = {};
-        $rootScope.user = null;
 
         perm.checkPermissionForView = function(view) {
             if (!view.requiresAuthentication) {
@@ -30,7 +29,8 @@ angular.module('RoleService', [])
                 return false;
             }
             var found = false;
-            $rootScope.$watch('user', function(){ }, true);
+
+            $rootScope.$watch('user.userProps', function(){ }, true);
             angular.forEach(permissions, function(permission, index){
                 if ($rootScope.user.userProps.rol.indexOf(permission) >= 0){
                     found = true;
