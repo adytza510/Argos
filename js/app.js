@@ -1,7 +1,7 @@
 /**
  * Created by bogdan.voicu on 12/28/2016.
  */
-var app = angular.module('AdminApp', ['ngMap', 'ui.router', 'ui.bootstrap', 'firebase', 'chart.js', 'Directives', 'RoleService']);
+var app = angular.module('AdminApp', ['ngMap', 'ui.router', 'ui.bootstrap', 'firebase', 'chart.js', 'Directives', 'RoleService', 'contextMenu']);
 
 var config = {
     apiKey: "AIzaSyBIvDbQ0rLop-Fm3Z4KfzX-mAoKLZRcDYI",
@@ -12,7 +12,8 @@ var config = {
 };
 firebase.initializeApp(config);
 
-var rootUrl = 'http://172.31.22.136:3000';
+var rootUrl = 'https://35.167.141.47:8000';
+//var rootUrl = 'http://35.167.141.47:3000';
 
 // ================ Logica la INITIALIZAREA aplicatiei/refresh ===================
 app.run(function($rootScope, $state, $firebaseAuth, $http, $uibModal, ROLE){
@@ -30,6 +31,29 @@ app.run(function($rootScope, $state, $firebaseAuth, $http, $uibModal, ROLE){
                 $scope.txt = txt;
 
                 $scope.modalCancel = function(){
+                    $uibModalInstance.close();
+                };
+            }
+        });
+    };
+    $rootScope.popupResetPassword = function(email){
+        $uibModal.open({
+            templateUrl:'templates/partials/popupPass.html',
+            size: 'sm',
+            //backdrop: false,
+            controller: function ($scope, $uibModalInstance, $firebaseAuth) {
+                var auth = $firebaseAuth();
+                $scope.emailReset = email;
+                $scope.modalOk = function() {
+                    auth.$sendPasswordResetEmail($scope.emailReset)
+                        .then(function() {
+                            $rootScope.popupInfo('Email sent.');
+                        }, function(error) {
+                            $rootScope.popupError(error.message);
+                        });
+                    $uibModalInstance.close();
+                };
+                $scope.modalCancel = function () {
                     $uibModalInstance.close();
                 };
             }
@@ -55,25 +79,33 @@ app.run(function($rootScope, $state, $firebaseAuth, $http, $uibModal, ROLE){
     $firebaseAuth().$onAuthStateChanged(function(user) {
         if(user){
             $rootScope.user = user;
-            console.log(user);
-            $http.get(rootUrl + '/user/'+ user.uid)
-                .then(function(resp){
-                    $rootScope.user.userProps = resp.data[0];
-                    $rootScope.user.userProps.parcari = [];
-                    var parcariUser = resp.data[0].id_parcari;
-                    var parcari = parcariUser.split(';');
-                    angular.forEach(parcari, function(parcare){
-                        $http.get(rootUrl+'/parking/'+parcare)
-                            .then(function(resp1){
-                                $rootScope.user.userProps.parcari.push(resp1.data[0]);
-                                //console.log($rootScope.user.userProps.parcari);
-                            })
-                            .catch(function(err){console.log(err)});
+            if(user.displayName == 'End User'){
+                $state.go('user.map');
+            } else {
+                console.log(user);
+                $http.get(rootUrl + '/user/' + user.uid)
+                    .then(function (resp) {
+                        $rootScope.user.userProps = resp.data[0];
+                        $rootScope.user.userProps.parcari = [];
+                        var parcariUser = resp.data[0].id_parcari;
+                        var parcari = parcariUser.split(';');
+                        angular.forEach(parcari, function (parcare) {
+                            $http.get(rootUrl + '/parking/' + parcare)
+                                .then(function (resp1) {
+                                    $rootScope.user.userProps.parcari.push(resp1.data[0]);
+                                    //console.log($rootScope.user.userProps.parcari);
+                                })
+                                .catch(function (err) {
+                                    console.log(err)
+                                });
+                        });
+                    })
+                    .catch(function (err) {
+                        console.log(err)
                     });
-                })
-                .catch(function(err){console.log(err)});
+            }
             $rootScope.$apply();
-            $state.go('app.dashboard')
+            //$state.go('app.dashboard')
         } else {
             $rootScope.user = null;
             $state.go('user.login');
@@ -86,12 +118,11 @@ app.run(function($rootScope, $state, $firebaseAuth, $http, $uibModal, ROLE){
             event.preventDefault();
         }
         if(toState.name !== 'user.login' &&  toState.name !== 'user.register'&& !$rootScope.user) {
-            event.preventDefault();
             $state.go('user.login');
         }
-        else if ((toState.name == 'user.login' || toState.name == 'user.register')&& $rootScope.user){
-            $state.go('app.dashboard');
-        }
+        //else if ((toState.name == 'user.login' || toState.name == 'user.register')&& $rootScope.user){
+        //    $state.go('app.dashboard');
+        //}
     })
 });
 
@@ -116,6 +147,11 @@ app.config(function($stateProvider, $urlRouterProvider){
             controller: 'UserCtrl',
             requiresAuthentication: true,
         })
+        .state("user.map",{
+            url:"/map",
+            templateUrl:"templates/userMap.html",
+            controller: 'UserMapCtrl'
+        })
         .state('app', {
             url: '/app',
             abstract: true,
@@ -136,7 +172,7 @@ app.config(function($stateProvider, $urlRouterProvider){
             url: "/reports",
             templateUrl: "templates/reports.html",
             controller: 'ReportsCtrl',
-            permissions: ["admin"]
+            permissions: ["sysadmin"]
         })
     ;
 });
@@ -144,24 +180,35 @@ app.config(function($stateProvider, $urlRouterProvider){
 
 
 app
-    .controller('MapCtrl', function($scope, NgMap, NavigatorGeolocation,$http){
-        $scope.nightMapStyle = nightMap;
-        //NgMap.getMap('argosMap')
-        //    .then(function(map) {
-        //    console.log('NgMap.getMap in MapCtrl', map);
-        //    });
-        $scope.onClick = function() {
-            alert('map clicked');
-        };
-        NavigatorGeolocation.getCurrentPosition()
-            .then(function(position) {
-                var lat = position.coords.latitude, lng = position.coords.longitude;
-                $scope.myPos = [lat, lng];
-            });
+    .controller('MapCtrl', function($scope, NgMap, $http, $interval){
 
-        $scope.googleMapsUrl = 'https://maps.google.com/maps/api/js?key=AIzaSyBWkYuMI3tLSHzTV6kj9gzTX8_OvDlBIc4&libraries=places';
+        $scope.onOverlayCompleted = function(el){
+            overlayRightClickListener(el);
+            google.maps.event.addListener(el.overlay, "click", function(event){
+                $scope.polygonActions = !$scope.polygonActions;
+            });
+            $scope.polygonActions = true;
+            console.log(el);
+        };
+
+        function overlayRightClickListener(el) {
+            google.maps.event.addListener(el.overlay, "rightclick", function(event){
+                var paths = [];
+                var chestiiNaspa = el.overlay.getPath();
+                for(var i =0; i < chestiiNaspa.length; i++){
+                    var coord = chestiiNaspa.getAt(i);
+                    var lat = coord.lat();
+                    var lng = coord.lng();
+                    paths.push([lat, lng]);
+                }
+                console.log(paths);
+            });
+        }
+
+        $scope.nightMapStyle = nightMap;
 
         $scope.showPredicitions = false;
+        $scope.polygonActions = false;
 
         $scope.toggleSearch = function( location ){
             $scope.showPredicitions = true;
@@ -200,15 +247,17 @@ app
             $scope.searchLocation = '';
         };
 
-        $scope.getParkingSpots = function(){
+
+        $interval(function(){
             $http.get(rootUrl+'/parkingSpot/all')
-                .then(function(resp){
-                    $scope.spots = resp.data;
-                })
-                .catch(function(err){
-                    console.log(err);
-                });
-        };
+                    .then(function(resp){
+                        $scope.spots = resp.data;
+                    })
+                    .catch(function(err){
+                        console.log(err);
+                    })
+        },1000);
+
 
         $scope.getMarkerIcon = function(status){
             if(status==1) return 'icons/true.png';
@@ -322,6 +371,7 @@ app
     })
     .controller('UserCtrl', function($scope, $state, $firebaseAuth, $rootScope){
         var auth = $firebaseAuth();
+        $scope.showPasswordResetForm = false;
 
         $scope.registerWithEmail = function(){
 
@@ -332,7 +382,7 @@ app
                         displayName: $scope.userRegister,
                         photoURL: ""
                     }).then(function() {
-                        $scope.popupInfo("Draga " + $scope.userRegister+", contul a fost creat!");
+                        $scope.popupInfo("Dear " + $scope.userRegister+", your account has been successfully created!");
                         $state.go('app.dashboard');
                     }, function(error) {
                         $scope.popupError(error);
@@ -354,7 +404,7 @@ app
 
             auth.$signInWithEmailAndPassword($scope.emailLogin, $scope.passwordLogin)
                 .then(function(user){
-                    $scope.popupInfo("Draga " + user.displayName+", esti logat!");
+                    $scope.popupInfo("Dear " + user.displayName+", you are logged in!");
                     $state.go('app.dashboard');
                     //$scope.resetPasswordEmail = user.email;
                 })
@@ -363,7 +413,7 @@ app
                     var errorCode = error.code;
                     var errorMessage = error.message;
                     if (errorCode === 'auth/wrong-password') {
-                        // $scope.showPasswordResetForm = true;
+                        $scope.showPasswordResetForm = true;
                         $scope.popupError('Wrong password.');
                     } else {
                         $scope.popupError(""+errorMessage);
@@ -378,10 +428,128 @@ app
             provider.addScope('user_friends');
             auth.$signInWithPopup(provider)
                 .then(function(result) {
-                    alert('Draga '+ result.user.displayName + ' esti logat!');
+                    alert('Dear '+ result.user.displayName + ', you are logged in!');
                 });
         };
 
+        $scope.forgotPassword = function(email){
+            $scope.popupResetPassword(email);
+        };
+    })
+    .controller('UserMapCtrl', function($scope, NgMap, NavigatorGeolocation, $http, $firebaseAuth, $sce){
+        var routeResponse, directionsService, directionsDisplay;
+
+        var rendererOpts = {
+            preserveViewport: true,
+            suppressMarkers: true,
+            suppressPolylines: false,
+            polylineOptions: {
+                strokeColor: '#44dfff',
+                strokeOpacity: 0.8,
+                strokeWeight: 10
+            },
+            markerOptions: {
+                visible: true
+            }
+        };
+
+        NavigatorGeolocation.getCurrentPosition()
+            .then(function(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                var currentPosition = new google.maps.LatLng(lat, lng);
+                $scope.myPos = [lat, lng];
+                $scope.currentPosition = currentPosition;
+            });
+
+        $scope.resizeMap = function(){
+            google.maps.event.trigger($scope.map, 'resize');
+        };
+        $scope.mapInit = function(){
+            NgMap.getMap('userMap')
+                .then(function(map) {
+                    $scope.map = map;
+                    directionsService = new google.maps.DirectionsService();
+                    directionsDisplay = new google.maps.DirectionsRenderer();
+                    directionsDisplay.setOptions(rendererOpts);
+                    directionsDisplay.setMap(map);
+                    //var x = document.getElementById('userMap');
+                    //x.style.height = '720px';
+                    //x.style.width = '100%';
+                    //var centerPosition = map.getCenter();
+                    //google.maps.event.trigger(map, 'resize');
+                    //map.setCenter(centerPosition);
+                });
+        };
+
+        $scope.logOff = function(){
+            $firebaseAuth().$signOut();
+            $state.go('user.login');
+        };
+
+        $scope.showDirections = false;
+        $scope.myPos = [];
+        //$scope.nearestSpotDestination = [29.6660000000, -98.4023640000];
+        $scope.availableSpots = [];
+
+        function addRoute(destination) {
+            routeResponse = null;
+            if (typeof google !== "undefined") {
+                console.log(destination);
+                var routeRequest = {
+                    origin: $scope.currentPosition,
+                    destination: destination,
+                    waypoints: [],
+                    optimizeWaypoints: false,
+                    travelMode: google.maps.TravelMode.DRIVING
+                };
+
+                directionsService.route(routeRequest, function(response, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        directionsDisplay.setDirections(response);
+                        google.maps.event.trigger($scope.map, 'resize');
+                        routeResponse = response;
+                        $scope.directions = response.routes['0'].legs['0'].steps;
+                        console.log($scope.directions);
+                        $scope.$apply();
+                    }
+                });
+            }
+        }
+
+        function removeRoute() {
+            if (typeof google !== "undefined" && typeof directionsDisplay !== "undefined") {
+                directionsDisplay.setMap(null);
+                directionsDisplay = null;
+                directionsDisplay = new google.maps.DirectionsRenderer();
+                directionsDisplay.setMap($rootScope.map);
+                directionsDisplay.setOptions(rendererOpts);
+            }
+        }
+
+        $scope.goToNearestSpot = function(){
+            $http.get(rootUrl+'/parkingSpot/all')
+                .then(function(resp){
+                    var spots = resp.data;
+                    angular.forEach(spots, function(spot){
+                        if(spot.status){
+                            $scope.availableSpots.push(spot);
+                        }
+                    });
+                    //console.log($scope.availableSpots);
+                    var destinatie = $scope.availableSpots[0].latitudine+', ' + $scope.availableSpots[0].longitudine;
+                    addRoute(destinatie);
+                })
+                .catch(function(err){
+                    console.log(err);
+                });
+        };
+
+        $scope.renderHtml = function(html_code){
+            return $sce.trustAsHtml(html_code);
+        };
+
+        $scope.nightMapStyle = nightMap;
     });
 
 

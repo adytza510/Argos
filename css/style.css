@@ -1,5 +1,5 @@
 body {
-    padding-top: 52px !important;
+    /*padding-top: 52px !important;*/
     background-color: rgba(0, 58, 81, 0.2);
 }
 
@@ -9,9 +9,20 @@ body, html {
 }
 
 #argosMap {
-    height:650px;
+    height:100%;
     width:100%;
 }
+
+#userMap {
+    height:720px;
+    width:100%;
+}
+
+/*#streetView {*/
+    /*display: inline-block;*/
+    /*height: 350px;*/
+    /*width: 350px;*/
+/*}*/
 
 #menu {
     left: -25px !important;
@@ -19,8 +30,9 @@ body, html {
 
 #menuList {
     background-color: rgba(0, 0, 0, 0.78);
-    height: 900px;
+    height: 1000px;
     font-size: 0.95em;
+    padding-top: 52px !important
 }
 
 #autocompletePredictionsSearch {
@@ -45,10 +57,26 @@ body, html {
 }
 
 #popupFooter {
-    background-color: ghostwhite;
+    background-color: whitesmoke;
     padding: 5px 10px 5px 220px !important;
 }
 
+#popupFooterResetPwd {
+    background-color: whitesmoke;
+    padding: 0 10px 5px 122px !important;
+}
+
+#forgotPass a {
+    color: rgba(255, 69, 0, 0.65);
+    font-size: 1.1em;
+}
+
+.userForm{
+    background-color: rgba(0, 0, 0, 0.12);
+    padding: 0 15px 20px 15px;
+    box-shadow: 0 0 50px #2a2a2a;
+    border-radius: 10px;
+}
 
 .modal-header#popupHeader {
     padding: 5px 10px 5px 15px !important;
@@ -56,7 +84,7 @@ body, html {
 }
 
 .customchart{
-    background-color: rgba(0, 0, 0, 0.28);
+    background-color: rgba(0, 0, 0, 0.50);
     color: whitesmoke !important;
     height: 400px !important;
 }
@@ -99,6 +127,51 @@ body, html {
     background-color: whitesmoke;
 }
 
+
+/* context menu */
+
+.context-menu {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    padding: 12px 0;
+    width: 240px;
+    background-color: #fff;
+    border: solid 1px #dfdfdf;
+    box-shadow: 1px 1px 2px #cfcfcf;
+}
+
+.context-menu--active {
+    display: block;
+}
+
+.context-menu__items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.context-menu__item {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.context-menu__item:last-child {
+    margin-bottom: 0;
+}
+
+.context-menu__link {
+    display: block;
+    padding: 4px 12px;
+    color: #0066aa;
+    text-decoration: none;
+}
+
+.context-menu__link:hover {
+    color: #fff;
+    background-color: #0066aa;
+}
+
 .uib-tab a {
     color: lightgrey;
     border-radius: 0 !important;
@@ -119,7 +192,7 @@ body, html {
     color: floralwhite !important;
 }
 
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.nav, .pagination, .carousel, .panel-title a, .dropdown-menu a { cursor: pointer; }
 
 .btn, .panel, .panel-heading {
     border-radius: 0 !important;

@@ -6,7 +6,6 @@
         map-type-id="SATELLITE"
         styles="{{nightMapStyle}}"
         fullscreen-control="true"
-        ng-init="getParkingSpots()"
         tilt="45">
 
     <custom-control id="autocompletePredictionsSearch" position="TOP_LEFT" index="1">
@@ -29,20 +28,36 @@
             </li>
         </ul>
     </custom-control>
+
+    <custom-control position="RIGHT_TOP" ng-show="polygonActions">
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                Polygon Actions <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a>Save</a></li>
+                <li><a>Delete</a></li>
+            </ul>
+        </div>
+    </custom-control>
+
+    <drawing-manager
+            drawing-control-options="{position: 'TOP_CENTER', drawingModes:['polygon']}"
+            polygonOptions="{editable: true, draggable: true, clickable:true}"
+            on-overlaycomplete="onOverlayCompleted()"
+            drawingControl="false">
+    </drawing-manager>
+
     <shape ng-repeat="parcare in user.userProps.parcari" id="polygon" name="polygon" stroke-color="#FF0000"
            stroke-opacity="1.0" stroke-weight="2"
-           paths="{{parcare.coordonate}}" >
+           paths="{{parcare.coordonate}}">
     </shape>
     <marker ng-repeat="spot in spots" icon="icons/{{spot.status}}.png"
-            position="[{{spot.latitudine}},{{spot.longitudine}}]">
+            position="[{{spot.latitudine+0.000025}},{{spot.longitudine+0.000008}}]">
     </marker>
+
+    <!--<street-view-panorama container="streetView"></street-view-panorama>-->
     <!--<custom-marker ng-repeat="spot in spots" position="{{spot.latitudine}},{{spot.longitudine}}">-->
         <!--<div><h1 style="color: #4cae4c"><span class="glyphicon glyphicon-map-marker"></span></h1></div>-->
     <!--</custom-marker>-->
 </ng-map>
-    <!--<div class="col-md-2" style="left:0 !important;">-->
-        <!--<div id="customControl1" class="row text-center">-->
-            <!--<button class="btn btn-info" style="width: 100%">Apasa</button>-->
-            <!--<button class="btn btn-danger" style="width: 100%">Nu apasa!</button>-->
-        <!--</div>-->
-    <!--</div>-->
