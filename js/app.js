@@ -1,7 +1,7 @@
 /**
  * Created by bogdan.voicu on 12/28/2016.
  */
-var app = angular.module('AdminApp', ['ngMap', 'ui.router', 'ui.bootstrap', 'firebase', 'chart.js', 'Directives', 'RoleService', 'contextMenu']);
+var app = angular.module('AdminApp', ['ngMap', 'ui.router', 'ui.bootstrap', 'firebase', 'chart.js', 'Directives', 'RoleService']);
 
 var config = {
     apiKey: "AIzaSyBIvDbQ0rLop-Fm3Z4KfzX-mAoKLZRcDYI",
@@ -372,6 +372,8 @@ app
     .controller('UserCtrl', function($scope, $state, $firebaseAuth, $rootScope){
         var auth = $firebaseAuth();
         $scope.showPasswordResetForm = false;
+
+        $scope.mailRegex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,4})$";
 
         $scope.registerWithEmail = function(){
 

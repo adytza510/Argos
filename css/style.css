@@ -8,6 +8,7 @@ body, html {
     width: 100%;
 }
 
+
 #argosMap {
     height:100%;
     width:100%;
@@ -127,7 +128,19 @@ body, html {
     background-color: whitesmoke;
 }
 
+.message {
+    margin-top: 35px;
+    box-shadow: 0 0 50px #4b4e4e;
 
+
+}
+
+.message sub {
+    color: lightslategrey;
+    font-size: 1.05em;
+    padding-bottom: 10px; !important
+
+}
 /* context menu */
 
 .context-menu {
