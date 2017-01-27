@@ -1,0 +1,65 @@
+<!--  map-lazy-load="https://maps.google.com/maps/api/js?key=AIzaSyBWkYuMI3tLSHzTV6kj9gzTX8_OvDlBIc4&libraries=places" -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header text-center" style="padding-left: 3%">
+            <a class="navbar-brand" href="#">Argos PS</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" style="cursor: pointer;">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-user" style="padding-right:10px"> </span> {{ user.displayName }}
+                    <span class="caret"> </span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="disabled"><a href="#" >Settings</a></li>
+                    <li class="divider"></li>
+                    <li><a ng-click="logOff()">Log Out</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="col-sm-9" ng-init="mapInit()" style="padding-top: 5% !important; height: 100%;" map-lazy-load="https://maps.google.com/maps/api/js" map-lazy-load-params="{{googleMapsUrl}}">
+    <ng-map id="userMap"
+            default-style="false"
+            center="{{myPos}}"
+            zoom="16"
+            map-type-id="ROADMAP"
+            map-type-control="false"
+            styles="{{nightMapStyle}}"
+            disable-default-u-i="true"
+            fullscreen-control="true">
+
+        <custom-control id="autocompletePredictionsSearch" position="TOP_LEFT" index="1">
+            <a class="btn btn-sm btn-info" ng-click="goToNearestSpot()">Get Nearest Parking Spot</a>
+            <a class="btn btn-sm btn-warning" ng-click="removeRoute()">Remove Route</a>
+        </custom-control>
+
+        <directions ng-if="showDirections"
+                panel="directionsPanel"
+                travel-mode="DRIVING"
+                origin="{{myPos}}"
+                destination="{{availableSpots[0].latitudine}}, {{availableSpots[0].longitudine}}">
+        </directions>
+
+        <marker position="{{myPos}}" ng-hide="showDirections"></marker>
+
+    </ng-map>
+</div>
+<div class="col-sm-3"  style="height: 720px; margin-top: 5% !important; overflow: auto">
+    <ul class="list-group">
+        <li class="list-group-item" style="cursor: pointer" ng-repeat="leg in directions" ng-click="centerMapOnLegStart(leg.start_point, leg.instructions)">
+            <div class="row">
+                <div class="col-sm-3">
+                    <i ng-class="returnDirectionClass(leg.maneuver)"></i><br><br>
+                    <p style="font-size: 0.85em; color: grey; left: 0 !important;">{{leg.distance.text}}</p>
+                </div>
+                <div class="col-sm-9">
+                    <span style="font-size: 0.9em; color: grey;" ng-bind-html="renderHtml(leg.instructions)"></span><hr>
+                    <span style="font-size: 0.85em;" class="pull-left">Estimated time:</span>
+                    <span style="font-size: 0.85em;" class="pull-right">{{leg.duration.text}}</span>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

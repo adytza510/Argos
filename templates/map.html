@@ -1,14 +1,16 @@
+<div map-lazy-load="https://maps.google.com/maps/api/js" map-lazy-load-params="{{googleMapsUrl}}" style="height: inherit; padding-top: 30px">
 <ng-map id="argosMap"
-        center="{{myPos}}"
-        zoom="16"
+        center="[{{user.userProps.parcari[0].latitudine}}, {{user.userProps.parcari[0].longitudine}}]"
+        zoom="20"
         map-type-control="false"
         disable-default-u-i="true"
-        map-type-id="ROADMAP"
+        map-type-id="SATELLITE"
         styles="{{nightMapStyle}}"
-        fullscreen-control="true">
+        fullscreen-control="true"
+        tilt="45">
 
     <custom-control id="autocompletePredictionsSearch" position="TOP_LEFT" index="1">
-        <div class="form-group">
+        <div class="form-group-sm">
             <input type="search"
                    class="form-control"
                    id="destination-input"
@@ -28,17 +30,31 @@
         </ul>
     </custom-control>
 
-    <shape id="polygon" name="polygon" stroke-color="#FF0000"
+    <custom-control position="RIGHT_TOP" ng-show="polygonActions">
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                Polygon Actions <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a>Save</a></li>
+                <li><a>Delete</a></li>
+            </ul>
+        </div>
+    </custom-control>
+
+    <drawing-manager
+            drawing-control-options="{position: 'TOP_CENTER', drawingModes:['polygon']}"
+            polygonOptions="{editable: true, draggable: true, clickable:true}"
+            on-overlaycomplete="onOverlayCompleted()"
+            drawingControl="false">
+    </drawing-manager>
+
+    <shape ng-repeat="parcare in user.userProps.parcari" id="polygon" name="polygon" stroke-color="#FF0000"
            stroke-opacity="1.0" stroke-weight="2"
-           paths="[[44.41,26.17],[44.408,26.17],[44.4095,26.165],[44.41,26.17]]" >
+           paths="{{parcare.coordonate}}">
     </shape>
-    <marker
-            position="{{myPos}}">
+    <marker ng-repeat="spot in spots" icon="icons/{{spot.status}}.png"
+            position="[{{spot.latitudine+0.000025}},{{spot.longitudine+0.000008}}]">
     </marker>
 </ng-map>
-    <!--<div class="col-md-2" style="left:0 !important;">-->
-        <!--<div id="customControl1" class="row text-center">-->
-            <!--<button class="btn btn-info" style="width: 100%">Apasa</button>-->
-            <!--<button class="btn btn-danger" style="width: 100%">Nu apasa!</button>-->
-        <!--</div>-->
-    <!--</div>-->
+</div>

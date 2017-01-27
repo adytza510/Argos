@@ -1,15 +1,24 @@
-<div class="container">
-    <h2>Login</h2>
-    <form>
-        <div class = "form-group">
-            <label for = "userLogin">User</label>
-            <input type = "text" class="form-control" id="userLogin">
-        </div>
-        <div class = "form-group">
-            <label for = "passwordLogin">Parola</label>
-            <input type = "password" class="form-control" id="passwordLogin">
-        </div>
-        <button class="btn btn-primary" ng-click="">Login</button>
-        <button class="btn btn-link" ui-sref="register" ng-click="">Register</button>
-    </form>
+<div class="container" style="padding-top: 55px">
+    <div class="col-md-4 col-md-offset-4 userForm">
+        <h2 align="center">Login</h2>
+        <hr/>
+        <form name="loginForm">
+            <div class = "form-group">
+                <label for = "emailLogin">Email</label>
+                <input type = "email" class="form-control" id="emailLogin" ng-model="emailLogin" placeholder="Email" required>
+            </div>
+            <div class = "form-group">
+                <label for = "passwordLogin">Parola</label>
+                <input type = "password" class="form-control" id="passwordLogin" ng-model="passwordLogin" placeholder="Password" ng-enter="loginWithEmail()" required>
+            </div>
+            <div class="btn-group-justified">
+                <a class="btn btn-primary"  ng-click="loginWithEmail()" ng-disabled="loginForm.$invalid">Login</a>
+                <a class="btn btn-link" ui-sref="user.register" ng-click="">Register</a>
+            </div>
+            <div id="forgotPass" align="center" ng-show="showPasswordResetForm">
+                <hr/>
+                <a class="btn btn-link" ng-click="forgotPassword(emailLogin)">Forgot password?</a>
+            </div>
+        </form>
+    </div>
 </div>

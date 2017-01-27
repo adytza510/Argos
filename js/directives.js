@@ -1,4 +1,4 @@
-angular.module('Directives', [])
+angular.module('Directives', ['RoleService'])
     .directive('widget', function(){
         return {
             restrict: 'E',
@@ -25,15 +25,24 @@ angular.module('Directives', [])
             });
         };
     })
-    .directive('menuTop', function(){
+    .directive('permission', function(ROLE, $timeout) {
         return {
-            restrict: 'E',
-            templateUrl: 'templates/partials/menuTop.html',
-        }
-    })
-    .directive('menuLeft', function(){
-        return {
-            restrict: 'E',
-            templateUrl: 'templates/partials/menuLeft.html',
+            restrict: 'A',
+            scope: {
+                permission: '='
+            },
+            link: function (scope, el, attrs) {
+                var hideMe = el[0];
+                scope.$watch(ROLE.isLoggedIn, function() {
+                    $timeout(function(){
+                        if(scope.user !==undefined ){
+                            if (!ROLE.userHasPermission(scope.permission) || scope.user.userProps==undefined ) {
+                                console.log(ROLE.userHasPermission(scope.permission));
+                                hideMe.style.display = "none";
+                            }
+                        }
+                    }, 90);
+                }, true);
+            }
         }
     });
