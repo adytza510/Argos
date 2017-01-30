@@ -1,3 +1,4 @@
+<div map-lazy-load="https://maps.google.com/maps/api/js" map-lazy-load-params="{{googleMapsUrl}}" style="height: inherit; padding-top: 30px">
 <ng-map id="argosMap"
         center="[{{user.userProps.parcari[0].latitudine}}, {{user.userProps.parcari[0].longitudine}}]"
         zoom="20"
@@ -55,9 +56,5 @@
     <marker ng-repeat="spot in spots" icon="icons/{{spot.status}}.png"
             position="[{{spot.latitudine+0.000025}},{{spot.longitudine+0.000008}}]">
     </marker>
-
-    <!--<street-view-panorama container="streetView"></street-view-panorama>-->
-    <!--<custom-marker ng-repeat="spot in spots" position="{{spot.latitudine}},{{spot.longitudine}}">-->
-        <!--<div><h1 style="color: #4cae4c"><span class="glyphicon glyphicon-map-marker"></span></h1></div>-->
-    <!--</custom-marker>-->
 </ng-map>
+</div>

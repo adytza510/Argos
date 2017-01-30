@@ -1,7 +1,7 @@
 /**
  * Created by bogdan.voicu on 12/28/2016.
  */
-var app = angular.module('AdminApp', ['ngMap', 'ui.router', 'ui.bootstrap', 'firebase', 'chart.js', 'Directives', 'RoleService', 'contextMenu']);
+var app = angular.module('AdminApp', ['ngMap', 'ui.router', 'ui.bootstrap', 'firebase', 'chart.js', 'Directives', 'RoleService']);
 
 var config = {
     apiKey: "AIzaSyBIvDbQ0rLop-Fm3Z4KfzX-mAoKLZRcDYI",
@@ -18,6 +18,7 @@ var rootUrl = 'https://35.167.141.47:8000';
 // ================ Logica la INITIALIZAREA aplicatiei/refresh ===================
 app.run(function($rootScope, $state, $firebaseAuth, $http, $uibModal, ROLE){
 
+    $rootScope.googleMapsUrl = 'https://maps.google.com/maps/api/js?key=AIzaSyBWkYuMI3tLSHzTV6kj9gzTX8_OvDlBIc4&libraries=places,drawing';
     $rootScope.popupInfo = function(txt){
         $uibModal.open({
             templateUrl:'templates/partials/popupInfo.html',
@@ -524,7 +525,7 @@ app
                 directionsDisplay.setMap(null);
                 directionsDisplay = null;
                 directionsDisplay = new google.maps.DirectionsRenderer();
-                directionsDisplay.setMap($rootScope.map);
+                directionsDisplay.setMap($scope.map);
                 directionsDisplay.setOptions(rendererOpts);
             }
         }
@@ -549,6 +550,33 @@ app
 
         $scope.renderHtml = function(html_code){
             return $sce.trustAsHtml(html_code);
+        };
+
+        $scope.returnDirectionClass = function(input){
+            return 'adp-maneuver adp-'+input
+        };
+
+        $scope.createGoogleInfoWindow = function() {
+            if ($scope.googleInfoWindow ) return;
+            $scope.googleInfoWindow = new google.maps.InfoWindow({
+                content: "",
+                disableAutoPan: true,
+                maxWidth: 250
+            });
+        };
+
+        $scope.centerMapOnLegStart = function(coord, content){
+            $scope.map.setCenter(coord);
+            $scope.map.setZoom(17);
+            $scope.createGoogleInfoWindow();
+            $scope.googleInfoWindow.setContent(content);
+            $scope.googleInfoWindow.setPosition(coord);
+            $scope.googleInfoWindow.open($scope.map);
+        };
+
+        $scope.removeRoute = function(){
+            removeRoute();
+            $scope.directions = null;
         };
 
         $scope.nightMapStyle = nightMap;

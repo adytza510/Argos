@@ -1,0 +1,12 @@
+<div class="modal-header" id="popupHeader" style="background-color: mediumpurple;">
+    <h4>Reset password</h4>
+</div>
+<div id="popupContent">
+    <p>Dear user please provide us the email address where you want to receive the password reset link.</p>
+    <input type = "email" class="form-control" id="passwordReset" ng-model="emailReset" placeholder="Please provide a valid email">
+    <hr/>
+    <div id="popupFooterResetPwd">
+        <a class="btn btn-primary" ng-click="modalOk()">Submit</a>
+        <a class="btn btn-link" ng-click="modalCancel()">Close</a>
+    </div>
+</div>
