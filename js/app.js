@@ -373,6 +373,8 @@ app
         var auth = $firebaseAuth();
         $scope.showPasswordResetForm = false;
 
+        $scope.mailRegex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,4})$";
+
         $scope.registerWithEmail = function(){
 
             auth.$createUserWithEmailAndPassword($scope.emailRegister, $scope.passwordRegister)

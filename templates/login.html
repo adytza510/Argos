@@ -9,7 +9,7 @@
             </div>
             <div class = "form-group">
                 <label for = "passwordLogin">Parola</label>
-                <input type = "password" class="form-control" id="passwordLogin" ng-model="passwordLogin" placeholder="Password" ng-enter="loginWithEmail()" required>
+                <input type = "password" class="form-control" id="passwordLogin" ng-model="passwordLogin" placeholder="Password" ng-enter="loginWithEmail()"  ng-minlength="6" ng-maxlength="20" required >
             </div>
             <div class="btn-group-justified">
                 <a class="btn btn-primary"  ng-click="loginWithEmail()" ng-disabled="loginForm.$invalid">Login</a>
